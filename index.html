@@ -781,10 +781,13 @@
 
 <!-- DELTA チャットウィジェット -->
 <style>
-#chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dim)); border-radius: 50%; border: 1px solid var(--border-gold); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px var(--glow-gold); z-index: 1001; transition: transform .2s, box-shadow .2s; }
-#chat-fab:hover { transform: scale(1.1); box-shadow: 0 6px 30px var(--glow-gold); }
-#chat-fab i { font-size: 1.3rem; color: var(--bg-dark); }
-#chat-box { position: fixed; bottom: 92px; right: 24px; width: 360px; height: 480px; background: var(--bg-panel); border: 1px solid var(--border-blue); border-radius: 4px; display: none; flex-direction: column; z-index: 1001; box-shadow: 0 8px 40px rgba(0,0,0,.6), 0 0 20px var(--glow-blue); overflow: hidden; }
+#chat-fab { position: fixed; bottom: 24px; right: 24px; width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border-gold); cursor: pointer; padding: 0; overflow: hidden; background: var(--bg-dark); box-shadow: 0 4px 20px var(--glow-gold); z-index: 1001; transition: transform .2s, box-shadow .2s, opacity .2s; animation: fab-float 3s ease-in-out infinite; }
+#chat-fab:hover { transform: scale(1.1); box-shadow: 0 6px 30px var(--glow-gold), 0 0 12px var(--glow-blue); }
+#chat-fab.hidden { opacity: 0; pointer-events: none; }
+#chat-fab img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@keyframes fab-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+#chat-fab:hover { box-shadow: 0 6px 30px var(--glow-gold), 0 0 16px var(--glow-blue); }
+#chat-box { position: fixed; bottom: 24px; right: 24px; width: 360px; height: 520px; background: var(--bg-panel); border: 1px solid var(--border-blue); border-radius: 4px; display: none; flex-direction: column; z-index: 1001; box-shadow: 0 8px 40px rgba(0,0,0,.6), 0 0 20px var(--glow-blue); overflow: hidden; }
 #chat-box.open { display: flex; }
 #chat-header { padding: 12px 16px; background: var(--bg-dark); border-bottom: 1px solid var(--border-blue); display: flex; align-items: center; gap: 10px; font-family: 'Share Tech Mono', monospace; font-size: .8rem; color: var(--accent-cyan); letter-spacing: 2px; }
 #chat-header span { flex: 1; }
@@ -805,12 +808,12 @@
 #chat-send:hover { box-shadow: 0 0 12px var(--glow-gold); }
 #chat-send:disabled { background: #333; box-shadow: none; }
 @media (max-width: 768px) {
-  #chat-box { width: calc(100vw - 32px); right: 16px; bottom: 88px; height: 420px; }
-  #chat-fab { bottom: 20px; right: 16px; }
+  #chat-box { width: calc(100vw - 32px); right: 16px; bottom: 16px; height: 420px; }
+  #chat-fab { bottom: 20px; right: 16px; width: 68px; height: 68px; }
 }
 </style>
 
-<button id="chat-fab" onclick="toggleChat()"><i class="fa fa-message"></i></button>
+<button id="chat-fab" onclick="toggleChat()"><img src="images/delta_avatar.jpg" alt="DELTA"></button>
 <div id="chat-box">
   <div id="chat-header">
     <div class="status-dot"></div>
@@ -833,6 +836,7 @@ let chatOpen = false;
 function toggleChat() {
   chatOpen = !chatOpen;
   document.getElementById('chat-box').classList.toggle('open', chatOpen);
+  document.getElementById('chat-fab').classList.toggle('hidden', chatOpen);
   if (chatOpen) document.getElementById('chat-input').focus();
 }
 
@@ -862,7 +866,7 @@ async function sendChat() {
   chatHistory.push({ role: 'user', content: msg });
 
   try {
-    const r = await fetch('/tools/api/chat', {
+    const r = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
