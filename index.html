@@ -868,7 +868,7 @@ async function sendChat() {
   chatHistory.push({ role: 'user', content: msg });
 
   try {
-    const r = await fetch('/api/chat', {
+    const r = await fetch('https://delta.bon-soleil.com/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
