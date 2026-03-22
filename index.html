@@ -12,10 +12,11 @@
     <meta property="og:image" content="https://delta-bonsoleil.github.io/images/hero_admiral_1.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://delta-bonsoleil.github.io/images/hero_admiral_1.jpg">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://delta.bon-soleil.com;">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Cinzel:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <style>
         :root {
             --bg-dark: #050a14;
@@ -602,6 +603,32 @@
             opacity: 0.5;
         }
 
+        /* ===== Skip nav ===== */
+        .skip-nav {
+            position: absolute;
+            top: -100%;
+            left: 1rem;
+            background: var(--bg-dark);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-blue);
+            z-index: 9999;
+            text-decoration: none;
+        }
+        .skip-nav:focus { top: 1rem; }
+
+        /* ===== Reduced motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .scan-line { display: none; }
+        }
+
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
             .about-grid { grid-template-columns: 1fr; }
@@ -628,7 +655,8 @@
 </head>
 <body>
 
-<div class="scan-line"></div>
+<a href="#about" class="skip-nav">メインコンテンツへスキップ</a>
+<div class="scan-line" aria-hidden="true"></div>
 
 <!-- Nav -->
 <nav>
@@ -722,7 +750,7 @@
 </section>
 
 <div class="hero2">
-    <img src="images/hero_admiral_2.jpg" alt="Bridge" width="1376" height="768" decoding="async">
+    <img src="images/hero_admiral_2.jpg" alt="Bridge" width="1376" height="768" decoding="async" loading="lazy">
     <div class="hero2-overlay">
         <div class="hero2-text">— 別働隊Delta、独立作戦行動を開始せよ —</div>
     </div>
@@ -834,12 +862,11 @@
 
 <!-- DELTA チャットウィジェット -->
 <style>
-#chat-fab { position: fixed; bottom: 24px; right: 24px; width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border-gold); cursor: pointer; padding: 0; overflow: hidden; background: var(--bg-dark); box-shadow: 0 4px 20px var(--glow-gold); z-index: 1001; transition: transform .2s, box-shadow .2s, opacity .2s; animation: fab-float 3s ease-in-out infinite; }
-#chat-fab:hover { transform: scale(1.1); box-shadow: 0 6px 30px var(--glow-gold), 0 0 12px var(--glow-blue); }
+#chat-fab { position: fixed; bottom: 24px; right: 24px; width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border-gold); cursor: pointer; padding: 0; overflow: hidden; background: var(--bg-dark); box-shadow: 0 4px 20px var(--glow-gold); z-index: 1001; transition: box-shadow .2s, opacity .2s; animation: fab-float 3s ease-in-out infinite; }
+#chat-fab:hover { animation-play-state: paused; box-shadow: 0 6px 30px var(--glow-gold), 0 0 16px var(--glow-blue); }
 #chat-fab.hidden { opacity: 0; pointer-events: none; }
 #chat-fab img { width: 100%; height: 100%; object-fit: cover; display: block; }
 @keyframes fab-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-#chat-fab:hover { box-shadow: 0 6px 30px var(--glow-gold), 0 0 16px var(--glow-blue); }
 #chat-box { position: fixed; bottom: 24px; right: 24px; width: 360px; height: 520px; background: var(--bg-panel); border: 1px solid var(--border-blue); border-radius: 4px; display: none; flex-direction: column; z-index: 1001; box-shadow: 0 8px 40px rgba(0,0,0,.6), 0 0 20px var(--glow-blue); overflow: hidden; }
 #chat-box.open { display: flex; }
 #chat-header { padding: 12px 16px; background: var(--bg-dark); border-bottom: 1px solid var(--border-blue); display: flex; align-items: center; gap: 10px; font-family: 'Share Tech Mono', monospace; font-size: .8rem; color: var(--accent-cyan); letter-spacing: 2px; }
@@ -886,11 +913,44 @@
 <script>
 let chatHistory = [];
 let chatOpen = false;
+const CHAT_HISTORY_MAX = 20;
 
+// ===== Nav =====
 function toggleNav(btn) {
   const links = document.getElementById('nav-links');
   const open = links.classList.toggle('open');
   btn.setAttribute('aria-expanded', open);
+}
+
+// Escキー: ナビ・チャット両方を閉じる
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const links = document.getElementById('nav-links');
+    if (links.classList.contains('open')) {
+      links.classList.remove('open');
+      const btn = document.querySelector('.nav-toggle');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.focus();
+    }
+    if (chatOpen) toggleChat();
+  }
+});
+
+// ===== Chat =====
+const FOCUSABLE_SELECTORS = '#chat-box button, #chat-box textarea';
+
+function trapFocus(e) {
+  if (e.key !== 'Tab') return;
+  const box = document.getElementById('chat-box');
+  const focusable = Array.from(box.querySelectorAll(FOCUSABLE_SELECTORS));
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault(); last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault(); first.focus();
+  }
 }
 
 function toggleChat() {
@@ -900,12 +960,27 @@ function toggleChat() {
   box.classList.toggle('open', chatOpen);
   fab.classList.toggle('hidden', chatOpen);
   fab.setAttribute('aria-expanded', chatOpen);
-  if (window.innerWidth <= 768) document.body.style.overflow = chatOpen ? 'hidden' : '';
-  if (chatOpen) document.getElementById('chat-input').focus();
+  if (chatOpen) {
+    if (window.innerWidth <= 768) document.body.style.overflow = 'hidden';
+    document.getElementById('chat-input').focus();
+    box.addEventListener('keydown', trapFocus);
+  } else {
+    document.body.style.overflow = '';
+    box.removeEventListener('keydown', trapFocus);
+    fab.focus();
+  }
 }
 
+// モバイル→デスクトップ切り替え時のoverflow残存解消
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) document.body.style.overflow = '';
+});
+
 function chatKeydown(e) {
-  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendChat(); }
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229) {
+    e.preventDefault();
+    sendChat();
+  }
 }
 
 async function sendChat() {
@@ -928,6 +1003,7 @@ async function sendChat() {
 
   document.getElementById('chat-send').disabled = true;
   chatHistory.push({ role: 'user', content: msg });
+  if (chatHistory.length > CHAT_HISTORY_MAX) chatHistory = chatHistory.slice(-CHAT_HISTORY_MAX);
 
   try {
     const r = await fetch('https://delta.bon-soleil.com/api/chat', {
@@ -938,11 +1014,11 @@ async function sendChat() {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     thinkEl.className = 'chat-msg bot';
-    thinkEl.textContent = d.reply || d.error || 'エラーが発生しました';
-    chatHistory.push({ role: 'assistant', content: d.reply || '' });
-  } catch(e) {
+    thinkEl.textContent = d.reply || 'エラーが発生しました';
+    if (d.reply) chatHistory.push({ role: 'assistant', content: d.reply });
+  } catch(err) {
     thinkEl.className = 'chat-msg bot';
-    thinkEl.textContent = '通信エラー: ' + e.message;
+    thinkEl.textContent = '通信エラーが発生しました。しばらくしてから再試行してください。';
   }
   document.getElementById('chat-send').disabled = false;
   msgs.scrollTop = msgs.scrollHeight;
