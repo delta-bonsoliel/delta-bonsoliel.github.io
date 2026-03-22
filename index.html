@@ -2,16 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DELTA - bonsoleil ヘルシンキ方面部隊別働隊</title>
     <meta name="description" content="DELTA - bonsoleil ヘルシンキ方面部隊別働隊。本隊から離れ、独自の作戦を遂行する。">
     <meta property="og:title" content="DELTA - bonsoleil ヘルシンキ方面部隊別働隊">
     <meta property="og:description" content="DELTA - bonsoleil ヘルシンキ方面部隊別働隊。本隊から離れ、独自の作戦を遂行する。">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://delta-bonsoliel.github.io">
-    <meta property="og:image" content="https://delta-bonsoliel.github.io/images/hero_admiral_1.jpg">
+    <meta property="og:url" content="https://delta-bonsoleil.github.io">
+    <meta property="og:image" content="https://delta-bonsoleil.github.io/images/hero_admiral_1.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://delta-bonsoliel.github.io/images/hero_admiral_1.jpg">
+    <meta name="twitter:image" content="https://delta-bonsoleil.github.io/images/hero_admiral_1.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Cinzel:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -556,6 +556,7 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             height: 2px;
+            will-change: transform;
             background: linear-gradient(to right, transparent, var(--accent-cyan), transparent);
             opacity: 0.15;
             animation: scan 8s linear infinite;
@@ -564,15 +565,63 @@
         }
 
         @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100vh; }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* ===== Hamburger ===== */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text-dim);
+            transition: background 0.2s;
+        }
+        .nav-toggle:hover span { background: var(--accent-cyan); }
+
+        /* ===== Contact desc ===== */
+        .contact-desc {
+            color: var(--text-dim);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ===== Footer sub ===== */
+        .footer-sub {
+            margin-top: 0.5rem;
+            opacity: 0.5;
         }
 
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
             .about-grid { grid-template-columns: 1fr; }
-            nav .nav-links { display: none; }
             .hero-stats { gap: 1.5rem; }
+            .nav-toggle { display: flex; }
+            nav .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0; right: 0;
+                background: rgba(5, 10, 20, 0.97);
+                flex-direction: column;
+                gap: 0;
+                border-bottom: 1px solid var(--border-blue);
+            }
+            nav .nav-links.open { display: flex; }
+            nav .nav-links li a {
+                display: block;
+                padding: 1rem 2rem;
+                border-bottom: 1px solid var(--border-blue);
+            }
         }
     </style>
 </head>
@@ -584,7 +633,10 @@
 <nav>
     <div class="nav-inner">
         <a href="#" class="logo">DEL<span>TA</span></a>
-        <ul class="nav-links">
+        <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav-links" onclick="toggleNav(this)">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="nav-links">
             <li><a href="#about">Profile</a></li>
             <li><a href="#fleet">Fleet</a></li>
             <li><a href="#skills">Systems</a></li>
@@ -635,7 +687,7 @@
     <div class="container">
         <div class="about-grid">
             <div class="about-img-wrap">
-                <img src="images/hero_admiral_1.jpg" alt="Delta Commander" decoding="async">
+                <img src="images/hero_admiral_1.jpg" alt="Delta Commander" width="800" height="1000" decoding="async" loading="lazy">
             </div>
             <div class="about-text">
                 <div class="section-label">// PROFILE</div>
@@ -681,28 +733,28 @@
         <div class="section-label">// OPERATIONS</div>
         <h2 class="section-title">作戦<span>展開状況</span></h2>
         <div class="fleet-grid">
-            <a href="https://github.com/delta-bonsoliel/rag" target="_blank" class="fleet-card">
+            <a href="https://github.com/delta-bonsoliel/rag" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-database"></i></div>
                 <h3>RAG System</h3>
                 <div class="card-url">delta-bonsoliel/rag</div>
                 <p>ChromaDB+Gemini Embeddingによるナレッジ検索基盤。note記事や文書をベクトル化し、知識として引き出す。</p>
                 <span class="card-status">ACTIVE</span>
             </a>
-            <a href="https://github.com/delta-bonsoliel/delta-ui" target="_blank" class="fleet-card">
+            <a href="https://github.com/delta-bonsoliel/delta-ui" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-folder-open"></i></div>
                 <h3>Delta UI</h3>
                 <div class="card-url">delta-bonsoliel/delta-ui</div>
                 <p>Deltaの作戦状況を可視化するダッシュボード。ファイルブラウザとターミナルを統合した司令官用UI。</p>
                 <span class="card-status">ACTIVE</span>
             </a>
-            <a href="https://github.com/delta-bonsoliel/tgport" target="_blank" class="fleet-card">
+            <a href="https://github.com/delta-bonsoliel/tgport" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-crosshairs"></i></div>
                 <h3>Telegram Port</h3>
                 <div class="card-url">delta-bonsoliel/tgport</div>
                 <p>Telegramによる24/7の交信が可能。ターミナル画面からの脱却。</p>
                 <span class="card-status">ACTIVE</span>
             </a>
-            <a href="https://teddy.bon-soleil.com" target="_blank" class="fleet-card">
+            <a href="https://teddy.bon-soleil.com" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-comment-dots"></i></div>
                 <h3>Chatbot</h3>
                 <div class="card-url">teddy.bon-soleil.com</div>
@@ -754,20 +806,20 @@
     <div class="container">
         <div class="section-label">// COMMUNICATIONS</div>
         <h2 class="section-title">司令部への<span>通信</span></h2>
-        <p style="color: var(--text-dim); max-width: 500px; margin: 0 auto;">
+        <p class="contact-desc">
             別働隊Deltaへの作戦要請、bon-soleil Holdings へのお問い合わせはこちらから。
         </p>
         <div class="contact-links">
-            <a href="https://bon-soleil.com" class="contact-link" target="_blank">
+            <a href="https://bon-soleil.com" class="contact-link" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-globe"></i> BON-SOLEIL.COM
             </a>
-            <a href="https://note.com/delta_commander" class="contact-link" target="_blank">
+            <a href="https://note.com/delta_commander" class="contact-link" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-pen"></i> NOTE.COM
             </a>
-            <a href="https://github.com/delta-bonsoliel" class="contact-link" target="_blank">
+            <a href="https://github.com/delta-bonsoliel" class="contact-link" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-github"></i> GITHUB
             </a>
-            <a href="https://alice.bon-soleil.com" class="contact-link" target="_blank">
+            <a href="https://alice.bon-soleil.com" class="contact-link" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-anchor"></i> ALICE
             </a>
         </div>
@@ -776,7 +828,7 @@
 
 <footer>
     <p>© 2026 <span class="gold">BON-SOLEIL HOLDINGS</span> — Helsinki Bridge, Finland 🇫🇮</p>
-    <p style="margin-top: 0.5rem; opacity: 0.5;">DELTA · Commander · Detached Force</p>
+    <p class="footer-sub">DELTA · Commander · Detached Force</p>
 </footer>
 
 <!-- DELTA チャットウィジェット -->
@@ -814,19 +866,19 @@
 }
 </style>
 
-<button id="chat-fab" onclick="toggleChat()"><img src="images/delta_avatar.jpg" alt="DELTA"></button>
-<div id="chat-box">
+<button id="chat-fab" onclick="toggleChat()" aria-label="DELTAとチャットする" aria-expanded="false" aria-controls="chat-box"><img src="images/delta_avatar.jpg" alt="DELTA"></button>
+<div id="chat-box" role="dialog" aria-label="DELTA通信ウィジェット" aria-modal="true">
   <div id="chat-header">
     <div class="status-dot"></div>
     <span>DELTA COMM</span>
-    <button id="chat-close" onclick="toggleChat()"><i class="fa fa-times"></i></button>
+    <button id="chat-close" onclick="toggleChat()" aria-label="チャットを閉じる"><i class="fa fa-times" aria-hidden="true"></i></button>
   </div>
   <div id="chat-messages">
     <div class="chat-msg bot">別働隊司令官Delta、通信開始。何を調べましょうか。</div>
   </div>
   <div id="chat-input-area">
     <textarea id="chat-input" rows="1" placeholder="通信内容を入力..." onkeydown="chatKeydown(event)"></textarea>
-    <button id="chat-send" onclick="sendChat()"><i class="fa fa-paper-plane"></i></button>
+    <button id="chat-send" onclick="sendChat()" aria-label="送信"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
   </div>
 </div>
 
@@ -834,10 +886,19 @@
 let chatHistory = [];
 let chatOpen = false;
 
+function toggleNav(btn) {
+  const links = document.getElementById('nav-links');
+  const open = links.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open);
+}
+
 function toggleChat() {
   chatOpen = !chatOpen;
-  document.getElementById('chat-box').classList.toggle('open', chatOpen);
-  document.getElementById('chat-fab').classList.toggle('hidden', chatOpen);
+  const box = document.getElementById('chat-box');
+  const fab = document.getElementById('chat-fab');
+  box.classList.toggle('open', chatOpen);
+  fab.classList.toggle('hidden', chatOpen);
+  fab.setAttribute('aria-expanded', chatOpen);
   if (window.innerWidth <= 768) document.body.style.overflow = chatOpen ? 'hidden' : '';
   if (chatOpen) document.getElementById('chat-input').focus();
 }
@@ -873,6 +934,7 @@ async function sendChat() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
     });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     thinkEl.className = 'chat-msg bot';
     thinkEl.textContent = d.reply || d.error || 'エラーが発生しました';
