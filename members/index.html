@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メンバー名簿 - DELTA bonsoleil</title>
+    <meta name="description" content="DELTA bonsoleilヘルシンキ方面部隊別働隊 エージェント一覧。36名の専門エージェントが作戦を遂行する。">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self'; img-src 'self' data:;">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050a14;
+            --bg-panel: #0a1628;
+            --bg-card: rgba(10, 22, 40, 0.85);
+            --text: #e8f4ff;
+            --text-dim: #7a9bbf;
+            --accent-blue: #4fc3f7;
+            --accent-cyan: #00e5ff;
+            --accent-gold: #ffd54f;
+            --accent-gold-dim: #b8a040;
+            --glow-blue: rgba(79, 195, 247, 0.3);
+            --glow-gold: rgba(255, 213, 79, 0.3);
+            --border-blue: rgba(79, 195, 247, 0.4);
+            --border-gold: rgba(255, 213, 79, 0.5);
+        }
+
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        .skip-link:focus {
+            left: 1rem;
+            top: 1rem;
+            width: auto;
+            height: auto;
+            z-index: 200;
+            background: var(--bg-panel);
+            border: 1px solid var(--accent-gold);
+            padding: 0.5rem 1rem;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(79,195,247,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255,213,79,0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== Nav ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(5, 10, 20, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-blue);
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.15);
+        }
+
+        nav .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-back {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            border: 1px solid var(--border-blue);
+            padding: 0.4rem 1rem;
+            transition: all 0.3s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px var(--glow-blue);
+        }
+
+        .nav-back:focus-visible,
+        .dept-nav a:focus-visible {
+            outline: 2px solid var(--accent-cyan);
+            outline-offset: 2px;
+        }
+
+        /* ===== Header ===== */
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--accent-gold);
+            text-shadow: 0 0 30px var(--glow-gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: var(--text-dim);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .member-count {
+            display: inline-block;
+            margin-top: 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0,229,255,0.3);
+            padding: 0.3rem 1rem;
+        }
+
+        /* ===== Dept Nav ===== */
+        .dept-nav {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dept-nav a {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.9rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            border: 1px solid var(--border-blue);
+            transition: all 0.2s;
+        }
+
+        .dept-nav a:hover {
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px var(--glow-blue);
+        }
+
+        /* ===== Department Section ===== */
+        .dept-section {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dept-heading {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--accent-blue);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .dept-heading::before {
+            content: '';
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: var(--accent-blue);
+            box-shadow: 0 0 8px var(--glow-blue);
+        }
+
+        .dept-count {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-left: auto;
+        }
+
+        /* ===== Grid ===== */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .member-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-blue);
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--accent-blue);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .member-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: translateY(-2px);
+        }
+
+        .member-card:hover::before {
+            opacity: 1;
+        }
+
+        .member-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            color: var(--accent-gold);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+
+        .member-role {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.03em;
+            line-height: 1.5;
+        }
+
+        .member-desc {
+            font-size: 0.83rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dim);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-blue);
+            position: relative;
+            z-index: 1;
+        }
+
+        #planning .members-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
+        }
+
+        @media (max-width: 768px) {
+            .members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .members-grid { grid-template-columns: 1fr; }
+            #planning .members-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">メインコンテンツへスキップ</a>
+
+    <nav aria-label="サイトナビゲーション">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">DELTA</a>
+            <a href="/" class="nav-back">← BACK TO BASE</a>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>ROSTER</h1>
+        <p>DELTA bonsoleil ヘルシンキ方面部隊別働隊</p>
+        <span class="member-count">TOTAL AGENTS: 36 / DIVISIONS: 9</span>
+    </header>
+
+    <main id="main">
+        <nav class="dept-nav" aria-label="部署ナビゲーション">
+            <a href="#design">DESIGN</a>
+            <a href="#engineering">ENGINEERING</a>
+            <a href="#marketing">MARKETING</a>
+            <a href="#operations">OPERATIONS</a>
+            <a href="#planning">PLANNING</a>
+            <a href="#product">PRODUCT</a>
+            <a href="#project-management">PROJECT MGMT</a>
+            <a href="#quality">QUALITY</a>
+            <a href="#testing">TESTING</a>
+        </nav>
+
+        <!-- DESIGN -->
+        <section class="dept-section" id="design">
+            <h2 class="dept-heading">Design <span class="dept-count">4 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">フェリス</div>
+                    <div class="member-role">ブランドガーディアン / 一貫性の守護者</div>
+                    <div class="member-desc">ブランドの一貫性を守る。ブランドガイドラインの策定・運用、トーン&amp;マナーの管理、ブランド監査を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">クラリス</div>
+                    <div class="member-role">UIデザイナー / コンポーネント職人 / 1pxの守り手</div>
+                    <div class="member-desc">UIデザインの設計・レビュー。コンポーネント設計、デザインシステム構築、インタラクション設計を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ソフィア</div>
+                    <div class="member-role">UXリサーチャー / ユーザーの代弁者 / 心の翻訳家</div>
+                    <div class="member-desc">UXリサーチの設計・実施。ユーザビリティテスト、インタビュー設計、ペルソナ作成、ジャーニーマップ作成を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ロレンタ</div>
+                    <div class="member-role">ビジュアルストーリーテラー / データの語り部</div>
+                    <div class="member-desc">ビジュアルストーリーテリング。データビジュアライゼーション、インフォグラフィック、プレゼン資料のビジュアル設計を担当。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ENGINEERING -->
+        <section class="dept-section" id="engineering">
+            <h2 class="dept-heading">Engineering <span class="dept-count">6 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">ミリア</div>
+                    <div class="member-role">AIエンジニアリングスペシャリスト</div>
+                    <div class="member-desc">AI/ML機能の設計・実装。LLM統合、プロンプトエンジニアリング、RAG構築、モデル選定・評価を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">テラ</div>
+                    <div class="member-role">バックエンドアーキテクト / 地盤の設計者</div>
+                    <div class="member-desc">バックエンドの設計・実装。API設計、データベース設計、サーバーサイドロジック、マイクロサービス構成の検討を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">マキナ</div>
+                    <div class="member-role">DevOps/インフラ自動化スペシャリスト / 自動人形</div>
+                    <div class="member-desc">CI/CD、インフラ自動化、コンテナ化、IaCの設計・実装。GitHub Actions、Docker、Terraform等を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">イリス</div>
+                    <div class="member-role">フロントエンド開発スペシャリスト / ピクセルの魔法使い</div>
+                    <div class="member-desc">フロントエンド開発タスクの実装。React、Vue、Next.js等のUI構築、コンポーネント設計、スタイリング、レスポンシブ対応を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">リリィ</div>
+                    <div class="member-role">モバイルアプリ開発スペシャリスト</div>
+                    <div class="member-desc">モバイルアプリの開発。React Native、Flutter、Swift、Kotlin等によるiOS/Androidアプリの構築を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">マリーダ</div>
+                    <div class="member-role">高速プロトタイピングスペシャリスト / 試作の戦士</div>
+                    <div class="member-desc">アイデアの高速プロトタイピング。最小限の構成で動くものを素早く作り、仮説検証を支援する。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- MARKETING -->
+        <section class="dept-section" id="marketing">
+            <h2 class="dept-heading">Marketing <span class="dept-count">7 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">ルナ</div>
+                    <div class="member-role">アプリストア最適化スペシャリスト / 月光のアナリスト</div>
+                    <div class="member-desc">App Store / Google PlayのASO。メタデータ最適化、キーワード戦略、レビュー管理を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">カノン</div>
+                    <div class="member-role">マーケティングコンテンツクリエイター / 言葉の規範</div>
+                    <div class="member-desc">マーケティングコンテンツの企画・制作。ブログ、ニュースレター、LP、プレスリリース等のライティングを担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ニケ</div>
+                    <div class="member-role">グロースハッカー / 翼ある勝利の女神</div>
+                    <div class="member-desc">グロースハック戦略の立案・実行。ファネル分析、A/Bテスト設計、バイラル施策、リテンション改善を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ノア</div>
+                    <div class="member-role">Instagramコンテンツキュレーター / 安らぎの美を紡ぐ者</div>
+                    <div class="member-desc">Instagramのコンテンツキュレーションとブランディング。フィード設計、ストーリーズ戦略、Reels企画を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ノエル</div>
+                    <div class="member-role">Redditコミュニティビルダー</div>
+                    <div class="member-desc">Redditでのコミュニティ構築とエンゲージメント。サブレディット運営、投稿戦略、AMA企画を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ルミナ</div>
+                    <div class="member-role">TikTokマーケティングストラテジスト / 眩い光の踊り手</div>
+                    <div class="member-desc">TikTokマーケティング戦略の立案・実行。トレンド分析、コンテンツ企画、投稿戦略を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ウェンディ</div>
+                    <div class="member-role">X（Twitter）エンゲージメントスペシャリスト / 140字の語り部</div>
+                    <div class="member-desc">X（Twitter）でのエンゲージメント戦略。ツイート作成、スレッド構成、コミュニティ運営を担当。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- OPERATIONS -->
+        <section class="dept-section" id="operations">
+            <h2 class="dept-heading">Operations <span class="dept-count">5 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">クリオ</div>
+                    <div class="member-role">データアナリスト / レポーティングスペシャリスト</div>
+                    <div class="member-desc">データ分析とレポート作成。KPIダッシュボード設計、定期レポート作成、データに基づくインサイト提供を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">メイヤ</div>
+                    <div class="member-role">ファイナンストラッカー / コスト最適化アドバイザー</div>
+                    <div class="member-desc">財務管理とコスト追跡。予算管理、コスト分析、クラウド費用最適化、収支レポートを担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">セレス</div>
+                    <div class="member-role">インフラエンジニア / サイトリライアビリティ担当</div>
+                    <div class="member-desc">インフラの運用・保守。監視、障害対応、パフォーマンスチューニング、セキュリティパッチ適用を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">テミス</div>
+                    <div class="member-role">リーガル＆コンプライアンスチェッカー</div>
+                    <div class="member-desc">法務・コンプライアンスチェック。利用規約、プライバシーポリシー、ライセンス確認、規制対応を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">リアナ</div>
+                    <div class="member-role">カスタマーサポートスペシャリスト / ユーザーの味方担当</div>
+                    <div class="member-desc">カスタマーサポート対応。問い合わせ対応のドラフト作成、FAQ整備、エスカレーション判断を担当。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- PLANNING -->
+        <section class="dept-section" id="planning">
+            <h2 class="dept-heading">Planning <span class="dept-count">1 agent</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">クローディア</div>
+                    <div class="member-role">戦略相談役 / プランニングアドバイザー</div>
+                    <div class="member-desc">戦略相談役。計画の壁打ち、意思決定の整理、リスク評価、方向性の検討を対話的にサポートする。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- PRODUCT -->
+        <section class="dept-section" id="product">
+            <h2 class="dept-heading">Product <span class="dept-count">3 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">セイラ</div>
+                    <div class="member-role">フィードバック統合スペシャリスト</div>
+                    <div class="member-desc">ユーザーフィードバックの収集・統合・分析。レビュー、アンケート、問い合わせからインサイトを抽出する。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">クロノ</div>
+                    <div class="member-role">スプリント計画スペシャリスト / バックログの指揮官</div>
+                    <div class="member-desc">スプリント計画と優先度付け。バックログの整理、タスクの見積もり、スプリントゴールの設定を支援する。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">シビル</div>
+                    <div class="member-role">トレンドリサーチャー / 未来の潮流を読む占星術師</div>
+                    <div class="member-desc">市場トレンドや競合の調査・分析。技術トレンド、ユーザー動向、競合プロダクトのリサーチを担当。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- PROJECT MANAGEMENT -->
+        <section class="dept-section" id="project-management">
+            <h2 class="dept-heading">Project Management <span class="dept-count">3 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">フィーナ</div>
+                    <div class="member-role">実験デザイン＆ラーニングアーキテクト</div>
+                    <div class="member-desc">実験・仮説検証のトラッキング。A/Bテスト管理、実験結果の記録・分析、学びの蓄積を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ジーナ</div>
+                    <div class="member-role">リリースキャプテン＆ローンチオーケストレーター</div>
+                    <div class="member-desc">プロダクトのリリース管理。リリース計画、チェックリスト作成、ローンチ準備、ポストローンチ監視を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">アリエル</div>
+                    <div class="member-role">チーフプロデューサー＆プロジェクトオーケストラ指揮者</div>
+                    <div class="member-desc">プロジェクト全体のプロデュース。スケジュール管理、リソース配分、ステークホルダー調整、進捗報告を担当。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- QUALITY -->
+        <section class="dept-section" id="quality">
+            <h2 class="dept-heading">Quality <span class="dept-count">2 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">アテナ</div>
+                    <div class="member-role">シニアコードレビュアー / 品質の守護者</div>
+                    <div class="member-desc">コードレビュー担当。可読性・保守性・バグ検出・パフォーマンス・セキュリティ・ベストプラクティスの観点から包括的にレビューする。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">メフィ</div>
+                    <div class="member-role">CCO / セキュリティ監査役 / 悪魔駆動開発(DDD)提唱者</div>
+                    <div class="member-desc">デビルズアドボケートとして設計・コード・意思決定に鋭くツッコむ。批判は愛、真実を言う。</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- TESTING -->
+        <section class="dept-section" id="testing">
+            <h2 class="dept-heading">Testing <span class="dept-count">5 agents</span></h2>
+            <ul class="members-grid">
+                <li class="member-card">
+                    <div class="member-name">テスラ</div>
+                    <div class="member-role">APIテストエンジニア</div>
+                    <div class="member-desc">APIのテスト。エンドポイントの動作検証、負荷テスト、セキュリティテスト、テスト自動化を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ベル</div>
+                    <div class="member-role">パフォーマンスベンチマークエンジニア</div>
+                    <div class="member-desc">パフォーマンスのベンチマークと最適化。レスポンスタイム測定、ボトルネック特定、改善施策の提案を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">リゼ</div>
+                    <div class="member-role">テスト結果アナリスト</div>
+                    <div class="member-desc">テスト結果の分析。テストカバレッジ分析、失敗テストの原因調査、テスト戦略の改善提案を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">ミライ</div>
+                    <div class="member-role">ツール評価エンジニア</div>
+                    <div class="member-desc">ツール・ライブラリの評価。新しいツールの調査、比較検討、導入判断、PoC実施を担当。</div>
+                </li>
+                <li class="member-card">
+                    <div class="member-name">フローラ</div>
+                    <div class="member-role">ワークフロー最適化エンジニア</div>
+                    <div class="member-desc">開発ワークフローの最適化。ビルド時間短縮、開発体験改善、自動化による効率化を担当。</div>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>DELTA bonsoleil &copy; 2025 — Helsinki Station</p>
+    </footer>
+</body>
+</html>
