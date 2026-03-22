@@ -619,6 +619,17 @@
         }
         .skip-nav:focus { top: 1rem; }
 
+        /* ===== Screen reader only ===== */
+        .sr-only {
+            position: absolute;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         /* ===== Reduced motion ===== */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -660,7 +671,7 @@
 <div class="scan-line" aria-hidden="true"></div>
 
 <!-- Nav -->
-<nav>
+<nav aria-label="メインナビゲーション">
     <div class="nav-inner">
         <a href="#" class="logo">DEL<span>TA</span></a>
         <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav-links">
@@ -751,7 +762,7 @@
     </div>
 </section>
 
-<div class="hero2">
+<div class="hero2" aria-hidden="true">
     <img src="images/hero_admiral_2.jpg" alt="" role="presentation" width="1376" height="768" decoding="async" loading="lazy">
     <div class="hero2-overlay">
         <div class="hero2-text">— 別働隊Delta、独立作戦行動を開始せよ —</div>
@@ -770,6 +781,7 @@
                 <div class="card-url">delta-bonsoleil/rag</div>
                 <p>ChromaDB+Gemini Embeddingによるナレッジ検索基盤。note記事や文書をベクトル化し、知識として引き出す。</p>
                 <span class="card-status">ACTIVE</span>
+                <span class="sr-only">（新しいタブで開く）</span>
             </a>
             <a href="https://github.com/delta-bonsoleil/delta-ui" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-folder-open"></i></div>
@@ -777,6 +789,7 @@
                 <div class="card-url">delta-bonsoleil/delta-ui</div>
                 <p>Deltaの作戦状況を可視化するダッシュボード。ファイルブラウザとターミナルを統合した司令官用UI。</p>
                 <span class="card-status">ACTIVE</span>
+                <span class="sr-only">（新しいタブで開く）</span>
             </a>
             <a href="https://github.com/delta-bonsoleil/tgport" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-crosshairs"></i></div>
@@ -784,6 +797,7 @@
                 <div class="card-url">delta-bonsoleil/tgport</div>
                 <p>Telegramによる24/7の交信が可能。ターミナル画面からの脱却。</p>
                 <span class="card-status">ACTIVE</span>
+                <span class="sr-only">（新しいタブで開く）</span>
             </a>
             <a href="https://teddy.bon-soleil.com" target="_blank" rel="noopener noreferrer" class="fleet-card">
                 <div class="card-icon"><i class="fas fa-comment-dots"></i></div>
@@ -791,6 +805,7 @@
                 <div class="card-url">teddy.bon-soleil.com</div>
                 <p>RAG搭載のチャットボット。代表執筆のnote記事237記事を学習済みの知性が答える。</p>
                 <span class="card-status">ACTIVE</span>
+                <span class="sr-only">（新しいタブで開く）</span>
             </a>
         </div>
     </div>
@@ -842,16 +857,16 @@
         </p>
         <div class="contact-links">
             <a href="https://bon-soleil.com" class="contact-link" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-globe"></i> BON-SOLEIL.COM
+                <i class="fas fa-globe"></i> BON-SOLEIL.COM<span class="sr-only">（新しいタブで開く）</span>
             </a>
             <a href="https://note.com/delta_commander" class="contact-link" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-pen"></i> NOTE.COM
+                <i class="fas fa-pen"></i> NOTE.COM<span class="sr-only">（新しいタブで開く）</span>
             </a>
             <a href="https://github.com/delta-bonsoleil" class="contact-link" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-github"></i> GITHUB
+                <i class="fab fa-github"></i> GITHUB<span class="sr-only">（新しいタブで開く）</span>
             </a>
             <a href="https://alice.bon-soleil.com" class="contact-link" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-anchor"></i> ALICE
+                <i class="fas fa-anchor"></i> ALICE<span class="sr-only">（新しいタブで開く）</span>
             </a>
         </div>
     </div>
@@ -860,7 +875,7 @@
 </main>
 
 <footer>
-    <p>© 2026 <span class="gold">BON-SOLEIL HOLDINGS</span> — Helsinki Bridge, Finland 🇫🇮</p>
+    <p>© 2026 <span class="gold">BON-SOLEIL HOLDINGS</span> — Helsinki Bridge, Finland <span aria-hidden="true">🇫🇮</span></p>
     <p class="footer-sub">DELTA · Commander · Detached Force</p>
 </footer>
 
@@ -905,11 +920,11 @@
     <span>DELTA COMM</span>
     <button id="chat-close" aria-label="チャットを閉じる"><i class="fa fa-times" aria-hidden="true"></i></button>
   </div>
-  <div id="chat-messages">
+  <div id="chat-messages" role="log" aria-live="polite" aria-label="会話履歴">
     <div class="chat-msg bot">別働隊司令官Delta、通信開始。何を調べましょうか。</div>
   </div>
   <div id="chat-input-area">
-    <textarea id="chat-input" rows="1" placeholder="通信内容を入力..."></textarea>
+    <textarea id="chat-input" rows="1" placeholder="通信内容を入力..." aria-label="メッセージ入力"></textarea>
     <button id="chat-send" aria-label="送信"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
   </div>
 </div>
@@ -1034,10 +1049,11 @@ async function sendChat() {
   } catch(err) {
     thinkEl.className = 'chat-msg bot';
     thinkEl.textContent = '通信エラーが発生しました。しばらくしてから再試行してください。';
+  } finally {
+    document.getElementById('chat-send').disabled = false;
+    document.getElementById('chat-input').disabled = false;
+    document.getElementById('chat-input').focus();
   }
-  document.getElementById('chat-send').disabled = false;
-  document.getElementById('chat-input').disabled = false;
-  document.getElementById('chat-input').focus();
   // DOM上限: 古いメッセージを削除（最大40件）
   const allMsgs = msgs.querySelectorAll('.chat-msg');
   if (allMsgs.length > 40) {
